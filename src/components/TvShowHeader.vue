@@ -18,7 +18,7 @@
 </template>
 <script>
 export default {
-  name: "headerSection"
+  name: "TvShowHeader"
 };
 </script>
 <style>

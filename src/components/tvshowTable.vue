@@ -12,8 +12,8 @@
         </tr>
       </thead>
       <tbody v-if="shows.length">
-        <tr v-for="show in shows" :key="show.id">
-          <td>{{ show.id }}</td>
+        <tr v-for="(show, index) in shows" :key="show.id">
+          <td>{{ index+1 }}</td>
           <td>
             <img
               v-if="show.image && show.image.medium"
@@ -47,7 +47,7 @@
 </template>
 <script>
 export default {
-  name: "tvshowTable",
+  name: "TvShowTable",
   props: {
     shows: {},
   },

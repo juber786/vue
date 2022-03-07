@@ -1,54 +1,63 @@
 <template>
-  <div v-if="loading" class="overlay"></div>
-  <div v-if="loading" class="loader"></div>
+  <div v-if="loading" class="overlay">,
+    <div class="loader"></div>
+  </div>
+  
   <div class="container">
     <div class="row">
       <div class="col-md-6 col-4"><h3 >TV Shows</h3></div>
       <div class="col-md-6 col-8">
-        <searchTvShow @getSearchKey="getSearchData" />
+        <SearchTvShow @getSearchKey="getSearchData" @filterByCat="filterTvShowByCat" />
       </div>
       <div class="col-md-12">
-        <tvShowTable v-if="!loading" :shows="tvShows" />
+        <TvShowTable v-if="!loading" :shows="tvShows" />
       </div>
     </div>
   </div>
 </template>
 <script>
-import tvShowTable from "../components/tvshowTable.vue";
-import searchTvShow from "../components/searchTvShow.vue";
-import tvShowService from "../services/tvshows-service.js";
+import TvShowTable from "./TvShowTable.vue";
+import SearchTvShow from "./SearchTvShow.vue";
+import TvShowService from "../services/TvShowsService.js";
+import { filterByCategory } from '../utils/filterUtil.js'
 export default {
-  name: "listTvShows",
+  name: "ListTvShows",
   data() {
     return {
       tvShows: [],
+      tvShowsHistory: [],
       pageNumber: 0,
       loading: false,
+      categoryHistory: 'All',
+     
     };
   },
   methods: {
     displayTvShowData() {
       this.loading = true;
-      tvShowService.getTvShow()
+      TvShowService.getTvShow()
         .then((res) => {
-           this.tvShows = res;
+           
+           this.tvShows = res.sort((a, b) =>  b.rating.average - a.rating.average);
+           this.tvShowsHistory = this.tvShows
            this.loading = false;
         })
         .catch((err) => {
           console.log("Error", err);
         });
     },
-    getSearchData(e) {
+    getSearchData(searchKey) {
       this.loading = true;
-      if (e === "") {
+      if (searchKey === "") {
         this.displayTvShowData();
         this.loading = false;
       } else {
-        tvShowService.getSearchResult(e)
+        TvShowService.getSearchResult(searchKey)
           .then((res) => {
             this.tvShows = res.map((val) => {
               return val.show;
             });
+            this.tvShowsHistory = this.tvShows
             this.scrollfunction();
             this.loading = false;
           })
@@ -58,9 +67,14 @@ export default {
       }
     },
     getMoreData() {
-      tvShowService.getTvShowByPage(this.pageNumber)
+      TvShowService.getTvShowByPage(this.pageNumber)
         .then((res) => {
-          this.tvShows = this.tvShows.concat(res);
+          this.tvShowsHistory = this.tvShowsHistory.concat(res);
+          let filterResult =  this.categoryHistory !== "All"
+                              ? filterByCategory(res, this.categoryHistory)
+                              : res;
+          
+          this.tvShows = this.tvShows.concat(filterResult);
         })
          .catch((err) => {
           console.log("Error", err);
@@ -74,6 +88,13 @@ export default {
         this.getMoreData();
       }
     },
+    filterTvShowByCat(category){
+       this.categoryHistory = category;
+       let filteredData = category !== "All"
+          ? filterByCategory(this.tvShowsHistory, category)
+          : this.tvShowsHistory;
+       this.tvShows = filteredData;
+    }
   },
   created() {
     this.displayTvShowData();
@@ -83,8 +104,8 @@ export default {
     document.removeEventListener("scroll", this.scrollfunction);
   },
   components: {
-    tvShowTable,
-    searchTvShow,
+    TvShowTable,
+    SearchTvShow,
   },
 };
 </script>

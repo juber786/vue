@@ -1,85 +1,84 @@
 <template>
-  <div v-if="loading" class="overlay"></div>
-  <div v-if="loading" class="loader"></div>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-6 col-4"><h3>Popular TV Shows</h3></div>
-      <div class="col-md-6 col-8">
-        <searchTvShow @getSearchKey="getSearchData" />
-      </div>
-      <div class="col-md-12">
-        <tvShowTable :shows="tvShows" />
+  <div>
+    <div v-if="loading" class="overlay">
+      <div class="loader"></div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 col-4"><h3>Popular TV Shows</h3></div>
+        <div class="col-md-6 col-8">
+          <SearchTvShow
+            @getSearchKey="getSearchData"
+            @filterByCat="filterTvShowByCat"
+          />
+        </div>
+        <div class="col-md-12">
+          <TvShowTable :shows="tvShows" />
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import tvShowTable from "../components/tvshowTable.vue";
-import searchTvShow from "../components/searchTvShow.vue";
-import tvShowService from "../services/tvshows-service.js";
+import TvShowTable from "./TvShowTable.vue";
+import SearchTvShow from "./SearchTvShow.vue";
+import TvShowsService from "../services/TvShowsService.js";
+import { filterByCategory } from "../utils/filterUtil.js";
 export default {
   name: "dashboard",
   data() {
     return {
       tvShows: [],
       loading: false,
+      tvShowsHistory: [],
     };
   },
   methods: {
-    displayTvShowData() {
-      this.loading = true;
-      tvShowService.getTvShow()
-        .then((res) => {
-          let getHighRating = res.sort((a, b) => {
-            if (a.rating.average < b.rating.average) {
-              return 1;
-            }
-            if (a.rating.average > b.rating.average) {
-              return -1;
-            }
-          });
-          this.tvShows = getHighRating.slice(0, 5);
-          this.loading = false;
-        })
-        .catch((err) => {
-          console.log("Error", err);
-        });
+    async displayTvShowData() {
+      try {
+        this.loading = true;
+        const resp = TvShowsService.getTvShow();
+         this.tvShowsHistory = resp.sort(
+          (a, b) => b.rating.average - a.rating.average
+        );
+        this.tvShows = this.tvShowsHistory.slice(0, 5);
+        this.loading = false;
+      } catch (error) {
+        console.log("Error", error);
+      }
     },
-
-    getSearchData(e) {
+    getSearchData(searchKey) {
       this.loading = true;
-      if (e === "") {
+      if (searchKey === "") {
         this.displayTvShowData();
         this.loading = false;
       } else {
-        tvShowService.getSearchResult(e)
-          .then((res) => {
-           let transData = res.sort((a, b) => {
-              if (a.show.rating.average < b.show.rating.average) {
-                return 1;
-              }
-              if (a.show.rating.average > b.show.rating.average) {
-                return -1;
-              }
-            });
-            let searchResult = transData.map((val) => {
-              return val.show;
-            });
+        try {
+          let searchResult = TvShowsService.getSearchResult(searchKey).sort(
+              (a, b) => b.show.rating.average - a.show.rating.average
+            ).map((val) => val.show);
             this.tvShows = searchResult.slice(0, 5);
             this.loading = false;
-          })
-          .catch((err) => {
-            console.log("Error", err);
-          });
+        } catch (error) {
+          console.log("Error", error);
+        }
       }
+    },
+    filterTvShowByCat(category) {
+      let filteredData =
+        category !== "All"
+          ? filterByCategory(this.tvShowsHistory, category)
+          : this.tvShowsHistory;
+
+      this.tvShows = filteredData.slice(0, 5);
     },
   },
   created() {
     this.displayTvShowData();
   },
   components: {
-    tvShowTable,
-    searchTvShow,
+    TvShowTable,
+    SearchTvShow,
   },
 };
 </script>

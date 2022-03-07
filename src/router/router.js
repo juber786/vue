@@ -1,7 +1,7 @@
 import {createRouter, createWebHistory} from 'vue-router';
-import Dashboard from '../components/dashboard.vue';
-import TvShows from '../components/list-tvshows.vue';
-import TvShowsDetails from '../components/tvshow-details.vue';
+import Dashboard from '../components/Dashboard.vue';
+import TvShows from '../components/ListTvShows.vue';
+import TvShowsDetails from '../components/TvShowDetails.vue';
 
 
 

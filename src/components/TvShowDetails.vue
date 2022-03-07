@@ -1,6 +1,8 @@
 <template>
-  <div v-if="loading" class="overlay"></div>
-  <div v-if="loading" class="loader"></div>
+  <div v-if="loading" class="overlay">
+     <div class="loader"></div>
+  </div>
+  
   <div class="container">
     <div class="row">
       <div class="col-md-12">
@@ -46,9 +48,9 @@
   </div>
 </template>
 <script>
-import tvShowService from "../services/tvshows-service.js";
+import TvShowService from "../services/TvShowsService.js";
 export default {
-  name: "tvShowDetails",
+  name: "TvShowDetails",
   data() {
     return {
       id: parseInt(this.$route.params.id),
@@ -59,7 +61,7 @@ export default {
   methods: {
     displayData() {
       this.loading = true
-      tvShowService.getTvShowDetails(this.id)
+      TvShowService.getTvShowDetails(this.id)
         .then((res) => {
           this.showDetails = res;
           this.loading = false

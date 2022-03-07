@@ -1,5 +1,5 @@
 <template>
-   <headerSection> </headerSection>
+   <TvShowHeader />
    
    <router-view></router-view>
 </template>
@@ -7,12 +7,12 @@
 <script>
 
 require('@/assets/style.css')
-import headerSection from './components/header.vue'
+import TvShowHeader from './components/TvShowHeader.vue'
 
 export default {
   name: 'App',
   components: {
-     headerSection
+     TvShowHeader
   }
 }
 </script>
