@@ -5,8 +5,8 @@
     </div>
     <div class="container">
       <div class="row">
-        <div class="col-md-6 col-4"><h3>Popular TV Shows</h3></div>
-        <div class="col-md-6 col-8">
+        <div class="col-md-6"><h3>Popular TV Shows</h3></div>
+        <div class="col-md-6">
           <SearchTvShow
             @getSearchKey="getSearchData"
             @filterByCat="filterTvShowByCat"
@@ -37,8 +37,8 @@ export default {
     async displayTvShowData() {
       try {
         this.loading = true;
-        const resp = TvShowsService.getTvShow();
-         this.tvShowsHistory = resp.sort(
+        const resp =  await TvShowsService.getTvShow();
+        this.tvShowsHistory = resp.sort(
           (a, b) => b.rating.average - a.rating.average
         );
         this.tvShows = this.tvShowsHistory.slice(0, 5);
@@ -71,9 +71,10 @@ export default {
           : this.tvShowsHistory;
 
       this.tvShows = filteredData.slice(0, 5);
-    },
+    }
   },
   created() {
+    console.log(this.$route.path);
     this.displayTvShowData();
   },
   components: {

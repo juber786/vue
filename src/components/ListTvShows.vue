@@ -2,11 +2,11 @@
   <div v-if="loading" class="overlay">,
     <div class="loader"></div>
   </div>
-  
+
   <div class="container">
     <div class="row">
-      <div class="col-md-6 col-4"><h3 >TV Shows</h3></div>
-      <div class="col-md-6 col-8">
+      <div class="col-md-6"><h3 >TV Shows</h3></div>
+      <div class="col-md-6">
         <SearchTvShow @getSearchKey="getSearchData" @filterByCat="filterTvShowByCat" />
       </div>
       <div class="col-md-12">
@@ -29,15 +29,16 @@ export default {
       pageNumber: 0,
       loading: false,
       categoryHistory: 'All',
-     
+
     };
   },
   methods: {
+
     displayTvShowData() {
       this.loading = true;
       TvShowService.getTvShow()
         .then((res) => {
-           
+
            this.tvShows = res.sort((a, b) =>  b.rating.average - a.rating.average);
            this.tvShowsHistory = this.tvShows
            this.loading = false;
@@ -73,7 +74,7 @@ export default {
           let filterResult =  this.categoryHistory !== "All"
                               ? filterByCategory(res, this.categoryHistory)
                               : res;
-          
+
           this.tvShows = this.tvShows.concat(filterResult);
         })
          .catch((err) => {
@@ -81,8 +82,8 @@ export default {
         });
     },
     scrollfunction() {
-      if (this.tvShows.length && window.innerHeight + window.scrollY >= 
-      document.body.offsetHeight - 40) 
+      if (this.tvShows.length && window.innerHeight + window.scrollY >=
+      document.body.offsetHeight - 40)
       {
         this.pageNumber++;
         this.getMoreData();
@@ -99,6 +100,7 @@ export default {
   created() {
     this.displayTvShowData();
     document.addEventListener("scroll", this.scrollfunction);
+    console.log(this.$route.path);
   },
   unmounted() {
     document.removeEventListener("scroll", this.scrollfunction);

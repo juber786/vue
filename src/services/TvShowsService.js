@@ -20,10 +20,3 @@ export default {
         return await output.json();
     }
 }
-
-
-
-
-
-
-
