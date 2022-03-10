@@ -40,15 +40,15 @@ describe('Dashboard.vue', () => {
     });
 
     it("should test whether on calling displayTvShowData is received", async () => {
-      const spyGetTvShow = jest.spyOn(TvShowsService, "getTvShow");
-      //spyGetTvShow.mockImplementation(() => Promise.resolve(tvshowsresponse))
-      spyGetTvShow.mockReturnValue(Promise.resolve(tvshowsresponse));
-      wrapper.vm.displayTvShowData();
-      expect(wrapper.vm.loading).toBe(true);
-      expect(await spyGetTvShow).toBeCalled();
-      expect(wrapper.vm.tvShowsHistory).toEqual(tvshowsresponse);
-      expect(wrapper.vm.tvShows).toEqual(tvshowsresponse);
-      expect(wrapper.vm.loading).toBe(false);
+        const spyGetTvShow = jest.spyOn(TvShowsService, "getTvShow");
+        //spyGetTvShow.mockImplementation(() => Promise.resolve(tvshowsresponse))
+        spyGetTvShow.mockReturnValue(Promise.resolve(tvshowsresponse));
+        wrapper.vm.displayTvShowData();
+        expect(wrapper.vm.loading).toBe(true);
+        expect(await spyGetTvShow).toBeCalled();
+        expect(wrapper.vm.tvShowsHistory).toEqual(tvshowsresponse);
+        expect(wrapper.vm.tvShows).toEqual(tvshowsresponse);
+        expect(wrapper.vm.loading).toBe(false);
         // const spyGetTvShow = jest.spyOn(TvShowsService, "getTvShow");
         // spyGetTvShow.mockReturnValue(tvshowsresponse);
         // wrapper.vm.displayTvShowData();

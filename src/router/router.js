@@ -1,28 +1,24 @@
 import {createRouter, createWebHistory} from 'vue-router';
 import Dashboard from '../components/Dashboard.vue';
-import TvShows from '../components/ListTvShows.vue';
 import TvShowsDetails from '../components/TvShowDetails.vue';
 
 
 
 
 const routes = [
-    {
-        path:'/',
+    {   path:'/',
         name:'Dashboard',
         component:Dashboard
     },
-    {
-        path:'/tvShows',
+    {   path:'/tvShows',
         name:'TvShows',
-        component:TvShows
+        component:Dashboard
     },
-    {
-        path:'/tvShow/id=:id',
+    {   path:'/tvShow/id=:id',
         name:'TvShowsDetails',
         component:TvShowsDetails
     }
-    
+
 
 
 ]

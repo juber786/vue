@@ -54,7 +54,19 @@ export default {
   methods: {},
 };
 </script>
-<style>
+<style scoped>
+/*
+  Enter and leave animations can use different
+  durations and timing functions.
+*/
+.table-row-enter-active {
+  background: blue;
+}
+
+.table-row-leave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
 .imgSm {
   width: 50px;
 }

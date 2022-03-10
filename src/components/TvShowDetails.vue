@@ -2,7 +2,7 @@
   <div v-if="loading" class="overlay">
      <div class="loader"></div>
   </div>
-  
+
   <div class="container">
     <div class="row">
       <div class="col-md-12">
@@ -43,6 +43,7 @@
             </div>
           </div>
         </div>
+        <div v-if="errorText != ''" class="alert alert-danger text-center">{{errorText}}</div>
       </div>
     </div>
   </div>
@@ -56,6 +57,7 @@ export default {
       id: parseInt(this.$route.params.id),
       showDetails: {},
       loading: false,
+      errorText: ''
     };
   },
   methods: {
@@ -67,7 +69,7 @@ export default {
           this.loading = false
         })
         .catch((error) => {
-          console.log(error);
+          this.errorText = error;
         });
     },
   },

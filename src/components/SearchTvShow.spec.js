@@ -9,8 +9,8 @@ describe('SearchTvShow.vue', () => {
     });
 
     it("on button click should be test if getSearchKey is emitted", async () => {
-      wrapper.vm.search = 'abc';
-       wrapper.find('button#search').trigger("click");
+        wrapper.vm.search = 'abc';
+        wrapper.find('button#search').trigger("click");
         expect(wrapper.emitted('getSearchKey')).toBeTruthy();
         expect(wrapper.emitted('getSearchKey').length).toBe(1);
        expect(wrapper.emitted('getSearchKey')[0]).toEqual(['abc']);
