@@ -54,28 +54,29 @@ export default {
   name: "TvShowDetails",
   data() {
     return {
-      id: parseInt(this.$route.params.id),
+      id: Number,
       showDetails: {},
       loading: false,
       errorText: ''
     };
   },
   methods: {
-    displayData() {
-      this.loading = true
-      TvShowService.getTvShowDetails(this.id)
-        .then((res) => {
-          this.showDetails = res;
-          this.loading = false
-        })
-        .catch((error) => {
-          this.errorText = error;
-        });
+    async displayData() {
+      try{
+         this.loading = true
+         let res = await TvShowService.getTvShowDetails(this.id)
+         this.showDetails = res;
+         this.loading = false
+      }catch(error){
+         this.errorText = error;
+      }
+    
     },
   },
   created() {
+    this.id = +this.$route.params.id;
     this.displayData();
-  },
+  }
 };
 </script>
 <style>

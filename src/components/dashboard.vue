@@ -13,7 +13,7 @@
           />
         </div>
         <div class="col-md-12">
-          <TvShowTable :shows="dataByRoutePath" />
+          <TvShowTable  :shows="dataByRoutePath" />
           <div v-if="errorText != ''" class="alert alert-danger text-center">{{errorText}}</div>
         </div>
       </div>
@@ -48,29 +48,28 @@ export default {
               (a, b) => b.rating.average - a.rating.average
             );
             this.tvShows = this.tvShowsHistory
-            this.loading = false;
       } catch (error) {
-        this.errorText = error
+        this.errorText =  error;
       }
+      this.loading = false;
+
     },
-    getSearchData(searchKey) {
-      this.loading = true;
+    async getSearchData(searchKey) {
       if (searchKey === "") {
-        this.displayTvShowData();
-        this.loading = false;
+        await this.displayTvShowData();
       } else {
-          TvShowsService.getSearchResult(searchKey)
-          .then((res) => {
-              let serchResult = res.sort(
-                (a, b) => b.show.rating.average - a.show.rating.average
-              ).map((val) => val.show);
-              this.tvShow = serchResult;
+         try {
+             this.loading = true;
+             const resp =  await TvShowsService.getSearchResult(searchKey)
+             let serchResult = resp.map((val) => val.show).sort(
+                (a, b) => b.rating.average - a.rating.average
+              )
+              this.tvShows = serchResult;
               this.tvShowsHistory = serchResult
-              this.loading = false;
-           })
-           .catch((error) => {
-             this.errorText = error
-           });
+         }catch (error){
+             this.errorText = error;
+         }
+         this.loading = false;
       }
     },
     filterTvShowByCat(category) {
@@ -81,19 +80,17 @@ export default {
           this.tvShows = filteredData;
 
     },
-    getMoreData() {
-      TvShowsService.getTvShowByPage(this.pageNumber)
-        .then((res) => {
-          this.tvShowsHistory = this.tvShowsHistory.concat(res);
-          console.log(this.tvShowsHistory)
-          let filterResult =  this.selectedCategory !== "All"
-                              ? filterByCategory(res, this.selectedCategory)
-                              : res;
-          this.tvShows = this.tvShows.concat(filterResult);
-        })
-         .catch((error) => {
-          this.errorText = error
-        });
+    async getMoreData() {
+        try{
+            const res = await TvShowsService.getTvShowByPage(this.pageNumber)
+            this.tvShowsHistory = this.tvShowsHistory.concat(res);
+            let filterResult =  this.selectedCategory !== "All"
+                                ? filterByCategory(res, this.selectedCategory)
+                                : res;
+            this.tvShows = this.tvShows.concat(filterResult);
+        }catch(error){
+           this.errorText = error
+        }
     },
     scrollfunction() {
       if (this.tvShows.length && window.innerHeight + window.scrollY >=
@@ -109,6 +106,7 @@ export default {
   },
   unmounted() {
     document.removeEventListener("scroll", this.scrollfunction);
+   
   },
   computed: {
       dataByRoutePath(){

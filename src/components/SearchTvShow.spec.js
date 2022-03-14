@@ -23,6 +23,6 @@ describe('SearchTvShow.vue', () => {
         expect(wrapper.emitted('filterByCat')[0]).toEqual(['All']);
     });
 
-
+   
 
 })
